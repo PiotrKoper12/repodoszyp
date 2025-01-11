@@ -1,162 +1,124 @@
-﻿void BubbleSort(int[] tab)
+﻿using System;
+
+namespace ListaJednokierunkowa
 {
-    for(int i =0; i< tab.Length-1; i++)
+    public class Node
     {
-        for(int j=0;j<tab.Length-1-i;j++)
+        public int Data;
+        public Node Next;
+
+        public Node(int data)
         {
-            if (tab[j]>tab[j+1])
-            {
-                int pom = tab[j];
-                tab[j]=tab[j+1];
-                tab[j+1]=pom;
-            }
-            
+            Data = data;
+            Next = null;
         }
     }
-
-}
-
-void InsertionSort(int[] tab)
-{
-    for(int i = 1; i< tab.Length; i++)
+    public class Lista
     {
-        int j = i - 1;
-        int klucz = tab[i];
+        private Node head;
 
-        while(j>=0&&tab[j]>klucz)
+        public Lista()
         {
-            tab[j+1] = tab[j];
-            j--;
+            head = null;
         }
-        tab[j+1] = klucz;
 
-    }
-}
-
-void MergeSort(int[] tab)
-{
-    if (tab.Length<=1)
-    {
-        return;
-    }    
-    int srodek = tab.Length/2;
-    int[] lewatablica = new int[srodek];
-    int[] prawatablica = new int[tab.Length-srodek];
-
-    for(int i = 0; i<srodek; i++)
-    {
-        lewatablica[i] = tab[i];
-    }
-    for(int i = srodek;i<tab.Length; i++)
-    {
-        prawatablica[i-srodek] = tab[i];
-    }   
-    MergeSort(lewatablica);
-    MergeSort(prawatablica);
-    Merge(tab,lewatablica,prawatablica);
-}
-
-void Merge(int[] tab, int[] lewatablica, int[] prawatablica)
-{
-    int indekslewy = 0;
-    int indeksprawy = 0;
-    int indeksglowny = 0;
-
-    while(indekslewy<lewatablica.Length&&indeksprawy<prawatablica.Length)
-    {
-        if (lewatablica[indekslewy]<prawatablica[indeksprawy])
+        public void DodajNaPoczatku(int data)
         {
-            tab[indeksglowny++] = lewatablica[indekslewy++];
+            Node newNode = new Node(data);
+            newNode.Next = head;
+            head = newNode;
         }
-        else
-        {
-            tab[indeksglowny++]=prawatablica[indeksprawy++];
-        }
-    }
-    while(indekslewy<lewatablica.Length)
-    {
-        tab[indeksglowny++] = lewatablica[indekslewy++];
-    }
-    while (indeksprawy<prawatablica.Length)
-    {
-        tab[indeksglowny++]=prawatablica[indeksprawy++];
-    }
-}
 
-void CountingSort(int[] tab)
-{
-    int Mx = tab.Max();
-    int Mn = tab.Min();
-    int[] nowatablica = new int[Mx-Mn+1];
-
-    for (int i = 0; i < tab.Length; i++)
-    {
-        nowatablica[tab[i]-Mn]++;
         
-    }
-
-
-
-    int x = 0;
-    for(int i = 0;i < nowatablica.Length;i++)
-    {
-        while(nowatablica[i] > 0)
+        public void DodajNaKoncu(int data)
         {
-            tab[x] = i+Mn;
-            x++; 
-            nowatablica[i]--;
+            Node newNode = new Node(data);
+
+            if (head == null)
+            {
+                head = newNode;
+            }
+            else
+            {
+                Node current = head;
+                while (current.Next != null) 
+                {
+                    current = current.Next;
+                }
+                current.Next = newNode; 
+            }
+        }
+
+        
+        public void UsunNaPoczatku()
+        {
+            if (head == null)
+            {
+                Console.WriteLine("Lista jest pusta. Nie można usunąć elementu.");
+                return;
+            }
+
+            head = head.Next;
+        }
+
+        
+        public void UsunNaKoncu()
+        {
+            if (head == null)
+            {
+                Console.WriteLine("Lista jest pusta. Nie można usunąć elementu.");
+                return;
+            }
+
+            if (head.Next == null) 
+            {
+                head = null; 
+                return;
+            }
+
+            Node current = head;
+            while (current.Next.Next != null)
+            {
+                current = current.Next;
+            }
+            current.Next = null;
+        }
+
+        public void Display()
+        {
+            if (head == null)
+            {
+                Console.WriteLine("Lista jest pusta.");
+                return;
+            }
+
+            Node current = head;
+            Console.Write("Lista: ");
+
+            while (current != null)
+            {
+                Console.Write(current.Data + " ");
+                current = current.Next;
+            }
+
+            Console.WriteLine();
         }
     }
 
-}
-
-
-void QuickSort(int[] array, int dolny, int gorna)
-{
-    if (dolny < gorna)
+    class Program
     {
-        int pivotIndex = podzieltab(array, dolny, gorna);
-        QuickSort(array, dolny, pivotIndex - 1);
-        QuickSort(array, pivotIndex + 1, gorna);
-    }
-}
-
-int podzieltab(int[] array, int dolny1, int gorny2)
-{
-    int pivot = array[gorny2];
-    int i = dolny1 - 1;
-
-    for (int j = dolny1; j < gorny2; j++)
-    {
-        if (array[j] <= pivot)
+        static void Main(string[] args)
         {
-            i++;
-            Zamien(array, i, j);
+            Lista mojaLista = new Lista();
+            mojaLista.DodajNaPoczatku(30);
+
+            mojaLista.Display();
+            mojaLista.DodajNaPoczatku(10);
+            mojaLista.Display();
+            mojaLista.DodajNaKoncu(20);
+            mojaLista.Display();
+            mojaLista.UsunNaPoczatku();
+            mojaLista.Display();
         }
     }
-    Zamien(array, i + 1, gorny2);
-    return i + 1;
 }
-void Zamien(int[] array, int i, int j)
-{
-    int temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-}
-
-
-void Wyswietltab(int[] tab)
-{
-    Console.WriteLine();
-    for (int i =0; i < tab.Length; i++)
-    {
-        Console.WriteLine(tab[i]);
-    }    
-}
-
-
-int[] tablica = { 4, 4, 2, 2, 5, 7, 3, 10, 13, 12, 5, 12, 6 };
-
-Wyswietltab(tablica);
-QuickSort(tablica,0,tablica.Length-1);
-Wyswietltab(tablica);
